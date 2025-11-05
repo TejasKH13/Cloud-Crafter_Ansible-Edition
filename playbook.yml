@@ -1,0 +1,15 @@
+---
+- name: Configure EC2 with role+tasks
+  hosts: ec2 
+  become: yes
+
+  roles:
+    - webeserver
+
+  tasks:
+    - name : Create a folder in home for demo
+      file:
+        path: /home/{{ansible_user}}/demo
+        state: directory
+        mode: '0755'
+        owner: "{{ansible_user}}" 

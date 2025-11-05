@@ -1,0 +1,27 @@
+---
+# roles/webserver/tasks/main.yml
+- name: Ensure package cache is updated (for apt-based distros)
+  package:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install nginx and git (uses package module, cross-distro)
+  package:
+    name:
+      - nginx
+      - git
+    state: present
+
+- name: Ensure nginx service is running and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Deploy a simple index.html from template
+  template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+    owner: root
+    mode: '0644'
+  notify: restart nginx
